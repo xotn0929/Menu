@@ -33,14 +33,9 @@ jobs:
     - name: Deploy
       uses: appleboy/ssh-action@master
       with:
-        host: 3.35.11.151
+        host: ec2-3-35-11-151.ap-northeast-2.compute.amazonaws.com
         username: ec2-user
-<<<<<<< HEAD
         #key: ${{ secrets.PRIVATE_KEY }}
-=======
-        key: ${{ secrets.PRIVATE_KEY }}
-        port: 22
->>>>>>> 60aa813b1a43df8a619bfaac8d872d2195ec2019
         envs: GITHUB_SHA
         script: |
           docker pull ${{ secrets.USERNAME }}/menu:${GITHUB_SHA::7}
