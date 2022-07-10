@@ -35,7 +35,7 @@ jobs:
       with:
         host: ec2-3-35-11-151.ap-northeast-2.compute.amazonaws.com
         username: ec2-user
-        #key: ${{ secrets.PRIVATE_KEY }}
+        key: ${{ secrets.PRIVATE_KEY }}
         envs: GITHUB_SHA
         script: |
           docker pull ${{ secrets.USERNAME }}/menu:${GITHUB_SHA::7}
