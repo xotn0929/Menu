@@ -24,3 +24,21 @@ jobs:
         cache: maven
     - name: Build with Maven
       run: mvn -B package --file pom.xml
+    - name: Docker Build
+      run: |
+       docker login -u ${{ secrets.USERNAME }} -p ${{ secrets.PASSWORD }}
+       docker build -t menu .
+       docker tag menu ${{ secrets.USERNAME }}/menu:${GITHUB_SHA::7}
+       docker push ${{ secrets.USERNAME }}/menu:${GITHUB_SHA::7}
+    - name: Deploy
+      uses: appleboy/ssh-action@master
+      with:
+        host: ec2-3-35-11-151.ap-northeast-2.compute.amazonaws.com
+        username: ec2-user
+        key: ${{ secrets.PRIVATE_KEY }}
+        envs: GITHUB_SHA
+        script: |
+          docker pull ${{ secrets.USERNAME }}/menu:${GITHUB_SHA::7}
+          docker tag ${{ secrets.USERNAME }}/menu:${GITHUB_SHA::7} menu
+          docker stop server
+          docker run -d --rm --name server -p 80:8080 menu
