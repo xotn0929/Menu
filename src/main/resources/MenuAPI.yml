@@ -1,0 +1,137 @@
+openapi: '3.0.2'
+info:
+  title: MENU API
+  version: '1.0'
+servers:
+  - url: http://localhost:8080/
+paths:
+  /menu/list:
+    get:
+      summary: 전체 메뉴 목록 출력
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /menu/list/child:
+    get:
+      summary: 하위 메뉴 리스트 조회
+      parameters:
+        - name: parent_id
+          in: query
+          description: 상위메뉴ID(최상위메뉴의 경우 입력안함)
+          schema: 
+            type: string
+            nullable: true
+            example: 1
+        - name: level
+          in: query
+          description: 메뉴 레벨 (1이 최상위메뉴)
+          schema:
+            type: string
+            nullable: true
+            example: 1
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /menu/sign:
+    post:
+      summary: 메뉴 등록
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: 메뉴명
+                level:
+                  type: string
+                  example: 1(ex.최상위메뉴 1)
+                parent_id:
+                  type: string
+                  example: 1(레벨2 이상의 하위메뉴 생성시 상위메뉴ID)
+                  nullable: true
+                parent_name:
+                  type: string
+                  example: 상위메뉴명
+                  nullable: true
+                path:
+                  type: string
+                  example: 메뉴 경로
+                  nullable: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /menu/retouch:
+    put:
+      summary: 메뉴 수정
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  example: 수정할 메뉴 ID
+                  nullable: false
+                name:
+                  type: string
+                  example: 메뉴명
+                path:
+                  type: string
+                  example: 메뉴 경로
+                  nullable: true      
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true                  
+  /menu/removal:
+    delete:
+      summary: 메뉴 삭제
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  example: 삭제할 메뉴ID
+                level:
+                  type: string
+                  example: 삭제할 메뉴의 레벨(재조회용)
+                parent_id:
+                  type: string
+                  example: 삭제할 메뉴의 상위메뉴레벨(재조회용)
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                                                                                               

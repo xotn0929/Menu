@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.musinsa.menu.mapper.MenuMapper">
+
+  <select id="getMenuAllList" resultType="java.util.LinkedHashMap">
+    SELECT ID, NAME, LEVEL, PARENT_ID, PARENT_NAME, PATH, INSERT_DATE, UPDATE_DATE
+      FROM MENU
+  </select>
+
+  <select id="getMenuList" resultType="java.util.LinkedHashMap">
+    SELECT ID, NAME, LEVEL, PARENT_ID, PARENT_NAME, PATH, INSERT_DATE, UPDATE_DATE
+      FROM MENU
+     WHERE 1=1
+     <if test="parent_id != null and parent_id != ''">
+       AND PARENT_ID = CONVERT(DECODE(#{parent_id}, '', NULL, #{parent_id}), INT)
+     </if>
+     <if test="level != null and level != ''">
+       AND LEVEL = CONVERT(DECODE(#{level}, '', NULL, #{level}), INT)
+     </if>       
+     ORDER BY ID ASC
+  </select>  
+
+  <select id="getMenu" resultType="java.util.LinkedHashMap">
+    SELECT ID, NAME, LEVEL, PARENT_ID, PARENT_NAME, PATH, INSERT_DATE, UPDATE_DATE
+      FROM MENU
+      WHERE 1=1
+        AND ID = CONVERT(DECODE(#{id}, '', NULL, #{id}), INT)
+  </select>
+
+  <insert id="insertMenu" useGeneratedKeys="true" keyProperty="ID">
+    INSERT INTO 
+    MENU
+              (NAME, LEVEL, PARENT_ID, PARENT_NAME, PATH, INSERT_DATE)
+    VALUES
+              (#{name}, CONVERT(DECODE(#{level}, '', NULL, #{level}), INT), CONVERT(DECODE(#{parent_id}, '', NULL, #{parent_id}), INT), #{parent_name}, #{path}, FORMATDATETIME(CURRENT_TIMESTAMP(), 'yyyyMMddHHmmss'))
+  </insert>
+
+  <update id="updateMenu">
+    UPDATE MENU
+       SET UPDATE_DATE = FORMATDATETIME(CURRENT_TIMESTAMP(), 'yyyyMMddHHmmss')
+     <if test="path != null and path != ''">
+         , PATH = #{path}
+     </if> 
+     <if test="name != null and name != ''">
+         , NAME = #{name}
+     </if>            
+     WHERE ID = CONVERT(DECODE(#{id}, '', NULL, #{id}), INT)
+  </update>
+
+  <delete id="deleteMenu">
+    DELETE FROM MENU
+     WHERE ID = CONVERT(DECODE(#{id}, '', NULL, #{id}), INT)
+  </delete>
+
+  <select id="getMaxLevel" resultType="HashMap">
+    SELECT MAX(LEVEL) AS MAXLEVEL
+      FROM MENU
+<!--      WHERE 1=1
+      <if test="id != null and id != ''">
+       AND ID = #{id}
+     </if>  -->       
+  </select> 
+
+  <delete id="deleteChildMenu">
+    DELETE FROM MENU A
+     WHERE LEVEL = CONVERT(DECODE(#{level}, '', NULL, #{level}), INT)
+       AND NOT EXISTS (SELECT *
+                         FROM MENU B
+                        WHERE A.ID = B.PARENT_ID)
+  </delete>
+</mapper>
