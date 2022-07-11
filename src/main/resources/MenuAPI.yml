@@ -4,6 +4,7 @@ info:
   version: '1.0'
 servers:
   - url: http://localhost:8080/
+#  - url: http://3.35.11.151/
 paths:
   /menu/list:
     get:
