@@ -3,8 +3,8 @@ info:
   title: MENU API
   version: '1.0'
 servers:
-  - url: http://localhost:8080/
-#  - url: http://3.35.11.151/
+#  - url: http://localhost:8080/
+  - url: http://ec2-3-35-11-151.ap-northeast-2.compute.amazonaws.com/
 paths:
   /menu/list:
     get:
